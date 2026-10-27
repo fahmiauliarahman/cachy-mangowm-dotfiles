@@ -1,11 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-if ! command -v omarchy >/dev/null 2>&1; then
-  echo "This dotfiles repository requires Omarchy." >&2
-  exit 1
-fi
-
 arch_packages=(
 {{- range .apps.arch }}
   {{ printf "%q" . }}
@@ -24,34 +19,26 @@ removed_packages=(
 {{- end }}
 )
 
-removed_webapps=(
-{{- range .webapps.remove }}
-  {{ printf "%q" . }}
-{{- end }}
-)
-
-{{ range .webapps.install }}omarchy webapp install {{ printf "%q" .name }} {{ printf "%q" .url }} {{ printf "%q" .icon }}
-{{ end }}
-
-flameshot_version="12.1.0-6"
-flameshot_url="https://archive.archlinux.org/packages/f/flameshot/flameshot-${flameshot_version}-x86_64.pkg.tar.zst"
-
 if (( ${#arch_packages[@]} )); then
-  omarchy pkg add "${arch_packages[@]}"
+  sudo pacman -S --needed --noconfirm "${arch_packages[@]}"
 fi
 
 if (( ${#aur_packages[@]} )); then
-  omarchy pkg aur add "${aur_packages[@]}"
+  aur_helper="$(command -v paru || command -v yay || true)"
+  if [[ -z $aur_helper ]]; then
+    echo "An AUR helper (paru or yay) is required for AUR packages." >&2
+    exit 1
+  fi
+  "$aur_helper" -S --needed --noconfirm "${aur_packages[@]}"
 fi
 
-if [[ "$(pacman -Q flameshot 2>/dev/null || true)" != "flameshot $flameshot_version" ]]; then
-  sudo pacman -U --needed --noconfirm "$flameshot_url"
-fi
-
-if (( ${#removed_packages[@]} )); then
-  omarchy pkg drop "${removed_packages[@]}"
-fi
-
-for webapp in "${removed_webapps[@]}"; do
-  omarchy webapp remove "$webapp"
+installed_removed=()
+for package in "${removed_packages[@]}"; do
+  if pacman -Q "$package" >/dev/null 2>&1; then
+    installed_removed+=("$package")
+  fi
 done
+
+if (( ${#installed_removed[@]} )); then
+  sudo pacman -Rns --noconfirm "${installed_removed[@]}"
+fi

@@ -5,7 +5,7 @@ if status is-interactive
     set -g fish_greeting
 
     if command -q oh-my-posh
-        oh-my-posh init fish --config ~/.config/ohmyposh/omarchy.omp.json | source
+        oh-my-posh init fish --config ~/.config/ohmyposh/mango.omp.json | source
     end
 
     # Only initialize mise if we aren't ALREADY in a Poetry shell
@@ -125,21 +125,19 @@ if command -q mise
             return $status
         end
 
-        if command -q omarchy
-            set -l php_build_dependencies base-devel autoconf bison re2c pkgconf libxml2 openssl icu libzip oniguruma curl libpng libjpeg-turbo freetype2 libwebp gmp libsodium readline bzip2
-            set -l missing_dependencies
-            for dependency in $php_build_dependencies
-                if not pacman -Q $dependency >/dev/null 2>&1
-                    set -a missing_dependencies $dependency
-                end
+        set -l php_build_dependencies base-devel autoconf bison re2c pkgconf libxml2 openssl icu libzip oniguruma curl libpng libjpeg-turbo freetype2 libwebp gmp libsodium readline bzip2
+        set -l missing_dependencies
+        for dependency in $php_build_dependencies
+            if not pacman -Q $dependency >/dev/null 2>&1
+                set -a missing_dependencies $dependency
             end
+        end
 
-            if test (count $missing_dependencies) -gt 0
-                echo "Installing PHP build dependencies: "(string join ", " $missing_dependencies)
-                if not omarchy pkg add $missing_dependencies
-                    echo "Failed to install PHP build dependencies."
-                    return 1
-                end
+        if test (count $missing_dependencies) -gt 0
+            echo "Installing PHP build dependencies: "(string join ", " $missing_dependencies)
+            if not sudo pacman -S --needed --noconfirm $missing_dependencies
+                echo "Failed to install PHP build dependencies."
+                return 1
             end
         end
 

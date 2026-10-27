@@ -7,7 +7,7 @@ new_workspace = "alt+shift+n"
 switch_tab = "alt+1..9"
 
 [theme]
-# Use the terminal palette so Herdr follows the active Omarchy theme.
+# Use the terminal palette to match the MangoWM color palette.
 name = "terminal"
 auto_switch = false
 

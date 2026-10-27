@@ -1,36 +1,34 @@
-# Clean Omarchy
+# CachyOS MangoWM Dotfiles
 
-My small, reproducible [Omarchy](https://omarchy.org/) 4 (Quattro) setup, managed with
-[chezmoi](https://www.chezmoi.io/). It removes apps I do not use, installs my
-daily tools, and keeps the desktop and development environment consistent
-across devices.
+My personal CachyOS desktop and development setup, managed with
+[chezmoi](https://www.chezmoi.io/). MangoWM is the Wayland compositor; this
+repository configures it alongside Waybar, Fish, Git, mise, Neovim, and other
+daily tools.
 
 ## What It Changes
 
-- Installs selected Arch and AUR packages and removes unwanted defaults
-- Removes unused Omarchy web apps and their Hyprland keybindings
-- Configures Hyprland, Omarchy Shell, Fish, Git, mise, Neovim, and LazyGit
-- Adds a compact bar, custom shell plugins, smaller gaps, rounded corners, and
-  natural touchpad scrolling
+- Installs DBX (`dbx-bin`) from the AUR for database work
+- Installs selected Arch and AUR packages, removes selected packages, and sets up MangoWM runtime tools
+- Configures MangoWM, Waybar, Fish, Git, mise, Neovim, and LazyGit
+- Adds MangoWM scripts for session actions, screenshots, clipboard, Wi-Fi, and wallpapers
 - Keeps credentials, browser data, and machine-generated backups out of Git
 
-This is a personal configuration, not an Omarchy installer. Omarchy must
-already be installed. Review [`.chezmoidata.yaml`](.chezmoidata.yaml) and the
-[`run_*` scripts](run_onchange_before_10-install-apps.sh.tmpl) before applying:
-the setup installs and removes packages, may ask for `sudo`, and changes the
-login shell to Fish.
+This is a personal chezmoi configuration, not an OS installer. It targets
+CachyOS with MangoWM already installed. Review [`.chezmoidata.yaml`](.chezmoidata.yaml)
+and the [`run_*` scripts](run_onchange_before_10-install-apps.sh.tmpl) before
+applying: package installation/removal uses `sudo`, AUR packages require `paru`
+or `yay`, and another script may change the login shell to Fish.
 
 ## Install
 
-On one of my new Omarchy devices:
+On a CachyOS MangoWM system with chezmoi installed:
 
 ```bash
-omarchy pkg add chezmoi
 chezmoi init --apply fahmiauliarahman/omarchy
 ```
 
-Anyone else should fork the repository, adjust the app lists and personal
-configuration, then initialize chezmoi from that fork instead.
+The GitHub repository currently has an `omarchy` slug; that is only its source
+URL, not the target operating system. Fork it and initialize from your fork.
 
 ## Keep Devices In Sync
 

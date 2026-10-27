@@ -2,17 +2,20 @@
 
 ## Start safely
 
-This repository assumes an existing Omarchy installation. The first apply can
-install and remove packages, remove web apps, and change the login shell. To
-inspect a checkout before applying it:
+This repository targets CachyOS with MangoWM already installed. The first apply
+can install and remove packages, and change the login shell. Review the source
+before applying it:
 
 ```bash
-omarchy pkg add chezmoi
 chezmoi init fahmiauliarahman/omarchy
 chezmoi diff
 chezmoi apply -v
 ```
 
+The GitHub repository currently has an `omarchy` slug; that is only its source
+URL, not the target operating system.
+
+Package installation uses `sudo pacman`; AUR packages require `paru` or `yay`.
 Log out and back in if shell or desktop changes do not appear immediately.
 
 ## Add or remove applications
@@ -28,13 +31,16 @@ apps:
     - bruno-bin
   remove:
     - chromium
-webapps:
-  remove:
-    - YouTube
 ```
 
 Use `apps.arch` for official Arch packages, `apps.aur` for AUR packages, and
-`apps.remove` for packages that should be absent. Apply the change with:
+`apps.remove` for packages that should be absent. The package script chooses
+`paru` or `yay` for AUR packages and uses `pacman` for repository packages.
+
+The `dbx-bin` AUR package installs DBX, the database client. `dbeaver` remains
+in `apps.remove`, so applying the package script removes DBeaver if installed.
+Review removals carefully: pacman may remove dependencies no longer needed by
+other packages. Apply changes with:
 
 ```bash
 chezmoi apply -v
@@ -48,30 +54,23 @@ The main customization points are:
 
 | Source path | Purpose |
 | --- | --- |
-| `dot_config/hypr/` | Monitors, input, bindings, gaps, windows, and autostart |
-| `dot_config/omarchy/shell.json` | Bar layout, clock, idle, and lock settings |
-| `dot_config/omarchy/plugins/` | Customized Omarchy Shell plugins |
-| `dot_config/omarchy/hooks/` | Actions triggered by Omarchy events |
-| `dot_config/fish/config.fish` | Shell environment, abbreviations, and functions |
-| `dot_config/mise/config.toml` | Development runtime versions |
+| `dot_config/mango/` | MangoWM settings, keybindings, and session scripts |
+| `dot_config/waybar/` | Status bar modules and styling |
+| `dot_config/mako/` | Notifications |
+| `dot_config/fish/` | Shell environment, abbreviations, functions, and plugins |
+| `dot_config/mise/` | Development runtime versions |
 | `dot_config/nvim/` | LazyVim configuration |
 | `dot_config/mimeapps.list` | Default browser and URL handlers |
 
 Edit source files directly with `chezmoi edit`, for example:
 
 ```bash
-chezmoi edit ~/.config/hypr/monitors.lua
-chezmoi apply ~/.config/hypr/monitors.lua
+chezmoi edit ~/.config/mango/cfg/keybinds.conf
+chezmoi apply ~/.config/mango/cfg/keybinds.conf
 ```
 
-Restart Omarchy Shell after changing its layout or plugins:
-
-```bash
-omarchy restart shell
-```
-
-The plugin apply script fills in unmodified files from Omarchy's bundled
-plugins. Files kept in this repository always take precedence.
+Reload MangoWM after changing its configuration with the configured reload
+keybinding (`Super+R`).
 
 ## Save live configuration changes
 
@@ -79,9 +78,7 @@ If a file was edited under `~/.config` rather than through `chezmoi edit`, copy
 it back into the source state:
 
 ```bash
-chezmoi add ~/.config/hypr
-chezmoi add ~/.config/omarchy/shell.json
-chezmoi add ~/.config/fish/config.fish
+chezmoi add ~/.config/mango ~/.config/waybar ~/.config/fish
 chezmoi diff
 ```
 
@@ -91,7 +88,7 @@ Then publish the source changes:
 chezmoi cd
 git status
 git add .
-git commit -m "Update Omarchy configuration"
+git commit -m "Update CachyOS MangoWM configuration"
 git push
 ```
 
@@ -127,10 +124,4 @@ Connect to a hidden Wi-Fi network:
 
 ```bash
 nmcli device wifi connect "YOUR_SSID" hidden yes
-```
-
-List monitor names and modes before editing `monitors.lua`:
-
-```bash
-hyprctl monitors all
 ```

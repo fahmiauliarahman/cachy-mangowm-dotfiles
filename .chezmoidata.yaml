@@ -1,47 +1,33 @@
 apps:
   arch:
-    - rustdesk
-    - foot
     - fish
-    - xournalpp
     - grim
     - flameshot
-    - polkit-gnome
+    - kitty
+    - waybar
+    - mako
+    - fuzzel
+    - swaybg
+    - swaylock
+    - wl-clipboard
+    - cliphist
+    - slurp
+    - playerctl
+    - brightnessctl
+    - pavucontrol
+    - libnotify
+    - qt6ct
   aur:
     - bruno-bin
     - helium-browser-bin
     - oh-my-posh-bin
+    - dbx-bin
     - redisinsight-bin
     - termius
   remove:
     - bitwarden
     - dbeaver
-    - chromium
-    - libreoffice-fresh
-    - tmux
     - ghostty
     - pinta
-    - omawrite
-    - omacalc
-    - omacut
-    - tensaku
-    - kdenlive
-    - cliamp
     - moonlight-qt
     - system-config-printer
-webapps:
-  install:
-    - name: WhatsApp
-      url: https://web.whatsapp.com/
-      icon: whatsapp
-  remove:
-    - Basecamp
-    - Discord
-    - Google Contacts
-    - Google Maps
-    - Google Messages
-    - Google Photos
-    - HEY
-    - X
-    - YouTube
-    - Zoom

@@ -13,7 +13,7 @@ notify() {
 }
 
 flameshot_wayland() {
-	env XDG_CURRENT_DESKTOP=sway XDG_SESSION_DESKTOP=sway QT_QPA_PLATFORM=wayland flameshot "$@"
+  env XDG_CURRENT_DESKTOP=mango XDG_SESSION_DESKTOP=mango QT_QPA_PLATFORM=wayland flameshot "$@"
 }
 
 case "${1:-region}" in
