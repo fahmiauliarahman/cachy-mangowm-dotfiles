@@ -1,0 +1,128 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 3,
+  "palette": {
+    "accent": "{{ .Env.OMARCHY_POSH_ACCENT | default \"cyan\" }}",
+    "foreground": "{{ .Env.OMARCHY_POSH_FOREGROUND | default \"white\" }}",
+    "red": "{{ .Env.OMARCHY_POSH_RED | default \"red\" }}",
+    "yellow": "{{ .Env.OMARCHY_POSH_YELLOW | default \"yellow\" }}",
+    "green": "{{ .Env.OMARCHY_POSH_GREEN | default \"green\" }}",
+    "blue": "{{ .Env.OMARCHY_POSH_BLUE | default \"blue\" }}",
+    "cyan": "{{ .Env.OMARCHY_POSH_CYAN | default \"cyan\" }}",
+    "magenta": "{{ .Env.OMARCHY_POSH_MAGENTA | default \"magenta\" }}",
+    "muted": "{{ .Env.OMARCHY_POSH_MUTED | default \"darkGray\" }}"
+  },
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "os",
+          "style": "plain",
+          "foreground": "p:accent",
+          "template": "{{ .Icon }}  ",
+          "options": { "linux": "", "omarchy": "" }
+        },
+        {
+          "type": "path",
+          "style": "plain",
+          "foreground": "p:blue",
+          "template": "  {{ .Path }}  ",
+          "options": { "style": "agnoster_git", "max_width": 40 }
+        },
+        {
+          "type": "git",
+          "style": "plain",
+          "foreground": "p:accent",
+          "template": "{{ if .UpstreamIcon }}{{ .UpstreamIcon }}{{ else }}{{ end }} {{ .HEAD }}{{ if .BranchStatus }} <p:cyan>{{ .BranchStatus }}</>{{ end }}{{ if .Working.Changed }} <p:yellow> {{ .Working.String }}</>{{ end }}{{ if .Staging.Changed }} <p:green> {{ .Staging.String }}</>{{ end }}  ",
+          "options": { "git_icon": "" }
+        },
+        {
+          "type": "executiontime",
+          "style": "plain",
+          "foreground": "p:yellow",
+          "template": "󱦟 {{ .FormattedMs }}  ",
+          "options": { "threshold": 500 }
+        },
+        {
+          "type": "status",
+          "style": "plain",
+          "foreground": "p:red",
+          "template": " {{ .String }}  "
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "overflow": "hide",
+      "segments": [
+        {
+          "type": "node",
+          "style": "plain",
+          "foreground": "p:green",
+          "template": " {{ .Full }}{{ if .PackageManagerIcon }} {{ .PackageManagerIcon }}{{ end }}  ",
+          "options": { "fetch_package_manager": true }
+        },
+        {
+          "type": "php",
+          "style": "plain",
+          "foreground": "p:magenta",
+          "template": " {{ .Full }}  "
+        },
+        {
+          "type": "python",
+          "style": "plain",
+          "foreground": "p:yellow",
+          "template": " {{ .Full }}{{ if .Venv }} <p:magenta>󰆍 {{ .Venv }}</>{{ end }}  ",
+          "options": { "display_mode": "context" }
+        },
+        {
+          "type": "go",
+          "style": "plain",
+          "foreground": "p:cyan",
+          "template": " {{ .Full }}  "
+        },
+        {
+          "type": "rust",
+          "style": "plain",
+          "foreground": "p:red",
+          "template": " {{ .Full }}  "
+        },
+        {
+          "type": "ruby",
+          "style": "plain",
+          "foreground": "p:red",
+          "template": " {{ .Full }}  "
+        },
+        {
+          "type": "dart",
+          "style": "plain",
+          "foreground": "#40C4FF",
+          "template": " {{ .Full }}  "
+        },
+        {
+          "type": "time",
+          "style": "plain",
+          "foreground": "p:accent",
+          "template": "󰥔 {{ .CurrentDate | date .Format }}",
+          "options": { "time_format": "15:04" }
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "p:accent",
+          "template": "> "
+        }
+      ]
+    }
+  ]
+}

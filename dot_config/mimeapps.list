@@ -1,0 +1,13 @@
+[Default Applications]
+text/html=helium-browser.desktop
+x-scheme-handler/http=helium-browser.desktop
+x-scheme-handler/https=helium-browser.desktop
+x-scheme-handler/about=helium-browser.desktop
+x-scheme-handler/unknown=helium-browser.desktop
+application/xhtml+xml=helium-browser.desktop
+x-scheme-handler/terminal=kitty.desktop
+
+[Added Associations]
+text/html=helium-browser.desktop;
+x-scheme-handler/https=helium-browser.desktop;
+x-scheme-handler/http=helium-browser.desktop;
