@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "trinity-bytes.lock-keys-osd",
+  "name": "Lock Keys OSD",
+  "version": "1.0.0",
+  "author": "trinity-bytes",
+  "license": "MIT",
+  "description": "Shows the Omarchy OSD when Caps Lock or Num Lock changes state.",
+  "kinds": ["service"],
+  "entryPoints": { "service": "Service.qml" }
+}
