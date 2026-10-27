@@ -1,0 +1,7 @@
+# | Outputs |
+{{ if eq .chezmoi.hostname "workstation" }}
+# eDP-1 "BOE 0x0705" 1366x768 @ 59.977
+monitor_rule = name:eDP-1, width:1366, height:768, refresh:59.977, x:0, y:0, scale:1, rr:0, vrr:0, primary:1
+{{ else }}
+# Add monitor_rule entries for this device's displays.
+{{ end }}

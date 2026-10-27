@@ -1,0 +1,75 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 28,
+  "spacing": 0,
+  "modules-left": [
+    "custom/power",
+    "custom/tags"
+  ],
+  "modules-center": [
+    "clock"
+  ],
+  "modules-right": [
+    "tray",
+    "pulseaudio",
+    "network",
+    "bluetooth",
+    "battery"
+  ],
+  "custom/power": {
+    "format": "󰣇",
+    "tooltip": false,
+    "on-click": "~/.config/mango/scripts/power.sh"
+  },
+  "custom/tags": {
+    "exec": "~/.config/mango/scripts/bar-tags.py",
+    "return-type": "json",
+    "format": "{text}",
+    "on-scroll-up": "mmsg dispatch viewtoleft_have_client",
+    "on-scroll-down": "mmsg dispatch viewtoright_have_client"
+  },
+  "tray": {
+    "icon-size": 14,
+    "spacing": 8
+  },
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟 {volume}%",
+    "format-icons": ["󰕿", "󰖀", "󰕾"],
+    "scroll-step": 2,
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click-right": "pavucontrol"
+  },
+  "network": {
+    "format-wifi": "󰖩",
+    "format-ethernet": "󰈀 {ifname}",
+    "format-disconnected": "󰖪",
+    "tooltip-format-wifi": "{essid}  {signalStrength}%",
+    "on-click": "~/.config/mango/scripts/radios.py wifi"
+  },
+  "bluetooth": {
+    "format": "󰂯",
+    "format-disabled": "󰂲",
+    "format-off": "󰂲",
+    "format-connected": "󰂱 {num_connections}",
+    "tooltip-format": "{controller_alias}",
+    "tooltip-format-connected": "{device_enumerate}",
+    "on-click": "~/.config/mango/scripts/radios.py bluetooth"
+  },
+  "battery": {
+    "states": {
+      "warning": 30,
+      "critical": 15
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-plugged": " {capacity}%",
+    "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+  },
+  "clock": {
+    "format": "{:%a, %d-%m-%Y %H:%M:%S}",
+    "interval": 1,
+    "tooltip": false
+  }
+}
