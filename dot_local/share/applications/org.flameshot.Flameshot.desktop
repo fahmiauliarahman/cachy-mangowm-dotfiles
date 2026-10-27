@@ -1,0 +1,28 @@
+[Desktop Entry]
+Name=Flameshot
+GenericName=Screenshot tool
+Comment=Powerful yet simple to use screenshot software.
+Keywords=flameshot;screenshot;capture;shutter;
+Exec=/usr/bin/env XDG_CURRENT_DESKTOP=Hyprland:sway /usr/bin/flameshot
+TryExec=/usr/bin/flameshot
+Icon=org.flameshot.Flameshot
+Terminal=false
+Type=Application
+Categories=Graphics;
+StartupNotify=false
+StartupWMClass=flameshot
+Actions=Configure;Capture;Launcher;
+X-DBUS-StartupType=Unique
+X-DBUS-ServiceName=org.flameshot.Flameshot
+
+[Desktop Action Configure]
+Name=Configure
+Exec=/usr/bin/env XDG_CURRENT_DESKTOP=Hyprland:sway /usr/bin/flameshot config
+
+[Desktop Action Capture]
+Name=Take screenshot
+Exec=/usr/bin/env XDG_CURRENT_DESKTOP=Hyprland:sway /usr/bin/flameshot gui --delay 500
+
+[Desktop Action Launcher]
+Name=Open launcher
+Exec=/usr/bin/env XDG_CURRENT_DESKTOP=Hyprland:sway /usr/bin/flameshot launcher

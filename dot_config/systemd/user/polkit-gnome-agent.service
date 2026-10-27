@@ -1,0 +1,12 @@
+[Unit]
+Description=GNOME PolicyKit Authentication Agent
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=exec
+ExecStart=/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+Restart=on-failure
+
+[Install]
+WantedBy=graphical-session.target
