@@ -1,0 +1,15 @@
+local map = vim.keymap.set
+
+map("n", "<C-d>", "<C-d>zz", { desc = "Half-page down and center" })
+map("n", "<C-u>", "<C-u>zz", { desc = "Half-page up and center" })
+map("x", "<leader>r", ":s/\\%V//gI<Left><Left><Left><Left>", { desc = "Replace in selection" })
+map("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Next buffer" })
+map("n", "<S-Tab>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+map("i", "jj", "<Esc>", { desc = "Exit insert mode" })
+map("i", "JJ", "<Esc>", { desc = "Exit insert mode" })
+map("n", "n", "'Nn'[v:searchforward].'zzzv'", { desc = "Next search result centered", expr = true })
+map("n", "N", "'nN'[v:searchforward].'zzzv'", { desc = "Previous search result centered", expr = true })
+map("n", "<C-a>", "ggVG", { desc = "Select all" })
+map("n", "<C-/>", "gcc", { desc = "Toggle comment on line", remap = true })
+map("x", "<C-/>", "gc", { desc = "Toggle comment on selection", remap = true })
+map("n", "<leader>ba", "<cmd>%bd<CR>", { desc = "delete all buffers" })
