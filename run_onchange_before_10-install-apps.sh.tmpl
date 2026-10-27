@@ -1,0 +1,57 @@
+#!/bin/bash
+set -euo pipefail
+
+if ! command -v omarchy >/dev/null 2>&1; then
+  echo "This dotfiles repository requires Omarchy." >&2
+  exit 1
+fi
+
+arch_packages=(
+{{- range .apps.arch }}
+  {{ printf "%q" . }}
+{{- end }}
+)
+
+aur_packages=(
+{{- range .apps.aur }}
+  {{ printf "%q" . }}
+{{- end }}
+)
+
+removed_packages=(
+{{- range .apps.remove }}
+  {{ printf "%q" . }}
+{{- end }}
+)
+
+removed_webapps=(
+{{- range .webapps.remove }}
+  {{ printf "%q" . }}
+{{- end }}
+)
+
+{{ range .webapps.install }}omarchy webapp install {{ printf "%q" .name }} {{ printf "%q" .url }} {{ printf "%q" .icon }}
+{{ end }}
+
+flameshot_version="12.1.0-6"
+flameshot_url="https://archive.archlinux.org/packages/f/flameshot/flameshot-${flameshot_version}-x86_64.pkg.tar.zst"
+
+if (( ${#arch_packages[@]} )); then
+  omarchy pkg add "${arch_packages[@]}"
+fi
+
+if (( ${#aur_packages[@]} )); then
+  omarchy pkg aur add "${aur_packages[@]}"
+fi
+
+if [[ "$(pacman -Q flameshot 2>/dev/null || true)" != "flameshot $flameshot_version" ]]; then
+  sudo pacman -U --needed --noconfirm "$flameshot_url"
+fi
+
+if (( ${#removed_packages[@]} )); then
+  omarchy pkg drop "${removed_packages[@]}"
+fi
+
+for webapp in "${removed_webapps[@]}"; do
+  omarchy webapp remove "$webapp"
+done

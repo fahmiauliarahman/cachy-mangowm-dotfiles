@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+
+shell_path="/usr/bin/fish"
+
+if [ ! -x "$shell_path" ]; then
+  echo "Fish is not installed; leaving the login shell unchanged." >&2
+  exit 0
+fi
+
+if ! grep -qx "$shell_path" /etc/shells; then
+  echo "$shell_path is not an approved login shell; leaving the login shell unchanged." >&2
+  exit 0
+fi
+
+current_shell="$(getent passwd "$USER" | cut -d: -f7)"
+if [ "$current_shell" != "$shell_path" ]; then
+  chsh -s "$shell_path" "$USER"
+fi

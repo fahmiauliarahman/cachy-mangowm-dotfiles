@@ -1,0 +1,63 @@
+#!/bin/bash
+set -euo pipefail
+
+# Materialize the upstream half of cloned Omarchy shell plugins.
+#
+# This repository only carries the files it customizes, so chezmoi creates
+# ~/.config/omarchy/plugins/<user>.<name>/ holding just a manifest and the
+# edited widget. The rest of a clone ships with Omarchy (Menu.qml,
+# MenuModel.js, ...), and `omarchy plugin clone` refuses to run once the
+# directory exists -- which would leave the manifest pointing at files that
+# were never written, and the widget silently failing to launch its panel.
+#
+# Only missing files are copied. Anything already present is a customized copy
+# and is left untouched; picking up upstream changes means re-cloning the
+# plugin by hand.
+
+if ! command -v omarchy >/dev/null 2>&1; then
+  echo "This dotfiles repository requires Omarchy." >&2
+  exit 1
+fi
+
+omarchy_path="${OMARCHY_PATH:-/usr/share/omarchy}"
+plugins_dir="$HOME/.config/omarchy/plugins"
+upstream_dir="$omarchy_path/shell/plugins"
+
+[[ -d $plugins_dir && -d $upstream_dir ]] || exit 0
+
+copied=0
+
+for manifest in "$plugins_dir"/*/manifest.json; do
+  [[ -f $manifest ]] || continue
+
+  # Only clones need this; a hand-written plugin owns all of its own files.
+  cloned_from=$(jq -r '.omarchy.clonedFrom // ""' "$manifest") || continue
+  [[ -n $cloned_from ]] || continue
+
+  # Packaged plugin directories are named after their role (menu, panels/clock,
+  # bar/widgets/SystemUpdate), not after the id they declare, so match on id.
+  source_dir=""
+  while IFS= read -r candidate; do
+    if [[ $(jq -r '.id // ""' "$candidate") == "$cloned_from" ]]; then
+      source_dir=$(dirname "$candidate")
+      break
+    fi
+  done < <(find "$upstream_dir" -name manifest.json -type f)
+
+  [[ -n $source_dir ]] || continue
+
+  target_dir=$(dirname "$manifest")
+  while IFS= read -r -d '' source_file; do
+    target_file="$target_dir/${source_file#"$source_dir"/}"
+    [[ -e $target_file ]] && continue
+
+    mkdir -p "$(dirname "$target_file")"
+    cp -- "$source_file" "$target_file"
+    echo "omarchy-plugins: added ${source_file#"$source_dir"/} to $(basename "$target_dir")"
+    copied=1
+  done < <(find "$source_dir" -type f -print0)
+done
+
+if (( copied )); then
+  omarchy-shell -q shell rescanPlugins || true
+fi
