@@ -1,0 +1,22 @@
+onboarding = false
+[keys]
+# Use Alt+B as Herdr's prefix, leaving Ctrl+B available to Neovim.
+prefix = "alt+b"
+new_tab = ["prefix+t", "alt+t"]
+new_workspace = "alt+shift+n"
+switch_tab = "alt+1..9"
+
+[theme]
+# Use the terminal palette so Herdr follows the active Omarchy theme.
+name = "terminal"
+auto_switch = false
+
+[ui]
+agent_panel_sort = "spaces"
+
+show_agent_labels_on_pane_borders = true
+[ui.toast]
+delivery = "off"
+
+[experimental]
+switch_ascii_input_source_in_prefix = true

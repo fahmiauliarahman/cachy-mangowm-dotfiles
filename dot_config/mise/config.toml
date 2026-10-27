@@ -1,0 +1,7 @@
+[tools]
+bun = "latest"
+go = "1.25.6"
+java = "lts"
+node = "24"
+python = "3.11"
+rust = "latest"
