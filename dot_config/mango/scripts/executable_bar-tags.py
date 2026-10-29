@@ -7,9 +7,11 @@ One JSON line per tick: text is the tag row, class is the layout symbol.
 
 import json
 import os
+from pathlib import Path
 import subprocess
 import sys
 import time
+import tomllib
 
 MMSG = "/usr/bin/mmsg"
 NAMES = {
@@ -29,6 +31,19 @@ NAMES = {
     "VF": "vfair",
 }
 
+def palette():
+    home = Path.home()
+    config = Path(os.environ.get("XDG_CONFIG_HOME", home / ".config"))
+    state = Path(os.environ.get("XDG_STATE_HOME", home / ".local/state")) / "mango/theme"
+    theme = state.read_text().strip() if state.exists() else "nord"
+    if not theme or "/" in theme or theme.startswith("."):
+        theme = "nord"
+    path = config / "mango/themes" / f"{theme}.toml"
+    return tomllib.loads(path.read_text())
+
+
+COLORS = palette()
+
 
 def monitor():
     raw = subprocess.check_output([MMSG, "get", "cursorpos"], text=True)
@@ -36,17 +51,18 @@ def monitor():
 
 
 def snapshot():
+    colors = COLORS
     mon = monitor()
     info = json.loads(subprocess.check_output([MMSG, "get", "monitor", mon], text=True))
     parts = []
     for tag in info["tags"]:
         n = tag["index"]
         if tag["is_urgent"]:
-            color, bg = "#101520", "#ad401f"
+            color, bg = colors["bright_foreground"], colors["red"]
         elif tag["is_active"]:
-            color, bg = "#101520", "#6c7e97"
+            color, bg = colors["bright_foreground"], colors["selection"]
         elif tag["client_count"]:
-            color, bg = "#d1dae8", ""
+            color, bg = colors["foreground"], ""
         else:
             continue
         if bg:

@@ -2,15 +2,15 @@
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
   "version": 3,
   "palette": {
-    "accent": "#89b4fa",
-    "foreground": "#d1dae8",
-    "red": "#e06c75",
-    "yellow": "#e6c07b",
-    "green": "#8fba7c",
-    "blue": "#6c7e97",
-    "cyan": "#89b4fa",
-    "magenta": "#b153a7",
-    "muted": "#6c7e97"
+    "accent": "#81a1c1",
+    "foreground": "#d8dee9",
+    "red": "#bf616a",
+    "yellow": "#ebcb8b",
+    "green": "#a3be8c",
+    "blue": "#81a1c1",
+    "cyan": "#88c0d0",
+    "magenta": "#b48ead",
+    "muted": "#667080"
   },
   "blocks": [
     {

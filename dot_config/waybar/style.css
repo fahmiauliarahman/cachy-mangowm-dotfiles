@@ -1,11 +1,11 @@
-/* Zeibytes dark blue, square, compact. 1366x768. */
+/* Omarchy Quattro Nord palette: compact, square surfaces. */
 
 * {
   font-family: "JetBrainsMono Nerd Font", "JetBrainsMono Nerd Font Mono";
   font-size: 13px;
   font-weight: 600;
   border: none;
-  border-radius: 8px;
+  border-radius: 2px;
   min-height: 0;
   margin: 0;
   padding: 0;
@@ -14,18 +14,19 @@
 window#waybar,
 window#waybar > box,
 #waybar {
-  background: #101520;
-  color: #d1dae8;
-  border-radius: 8px;
-  margin: 6px 8px 0 8px;
+  background: #2e3440;
+  color: #d8dee9;
+  border-radius: 2px;
+  margin: 0;
 }
+
 #custom-power,
 #custom-tags,
 #clock {
   background: transparent;
-  color: #d1dae8;
-  padding: 0 10px;
-  margin: 0 4px;
+  color: #d8dee9;
+  padding: 0 8px;
+  margin: 0 2px;
 }
 
 #tray,
@@ -34,13 +35,13 @@ window#waybar > box,
 #bluetooth,
 #battery {
   background: transparent;
-  color: #d1dae8;
-  padding: 0 4px;
-  margin: 0 1px;
+  color: #d8dee9;
+  padding: 0 6px;
+  margin: 0 2px;
 }
 
 #custom-power {
-  color: #89b4fa;
+  color: #81a1c1;
   padding: 0 12px;
   font-size: 15px;
 }
@@ -50,57 +51,57 @@ window#waybar > box,
 }
 
 #custom-tags .active {
-  background: #6c7e97;
-  color: #101520;
+  background: #434c5e;
+  color: #d8dee9;
   padding: 0 6px;
 }
 
 #custom-tags .occupied {
-  color: #d1dae8;
+  color: #adb5c4;
   padding: 0 6px;
 }
 
 #custom-tags .urgent {
-  background: #ad401f;
-  color: #101520;
+  background: #bf616a;
+  color: #191c23;
   padding: 0 6px;
 }
 
 #custom-layout {
-  color: #89b4fa;
+  color: #81a1c1;
   padding-right: 10px;
 }
 
 #taskbar button {
-  background: #101520;
-  color: #d1dae8;
+  background: #191c23;
+  color: #d8dee9;
   padding: 0 6px;
   border-radius: 0;
 }
 
 #taskbar button.active {
-  color: #89b4fa;
+  color: #81a1c1;
 }
 
 #battery.warning {
-  color: #e6c07b;
+  color: #ebcb8b;
 }
 
 #battery.critical {
-  color: #e06c75;
+  color: #bf616a;
 }
 
 #pulseaudio.muted {
-  color: #6c7e97;
+  color: #667080;
 }
 
 tooltip {
-  background: #1a222e;
-  color: #d1dae8;
-  border: 1px solid #2a3648;
-  border-radius: 0;
+  background: #222730;
+  color: #d8dee9;
+  border: 1px solid #4c566a;
+  border-radius: 2px;
 }
 
 tooltip label {
-  color: #d1dae8;
+  color: #d8dee9;
 }

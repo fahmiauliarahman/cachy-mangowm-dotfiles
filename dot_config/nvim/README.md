@@ -2,11 +2,11 @@
 
 A [LazyVim](https://www.lazyvim.org/)-based Neovim setup, managed with chezmoi. It layers a
 curated set of LazyVim's official language extras on top of the framework defaults, plus a
-Catppuccin theme and a handful of ergonomic keymaps.
+MangoWM/Omarchy Quattro palette-aware colorscheme and ergonomic keymaps.
 
 ## Features
 
-- Catppuccin Mocha with transparent editor and floating windows
+- Active MangoWM Quattro palette on startup; open editors update automatically after theme switches
 - Go support with `gopls`, `gofumpt`, and `goimports`
 - Python and Django support with `basedpyright`, Ruff, and Django template highlighting
 - PHP support with `intelephense`

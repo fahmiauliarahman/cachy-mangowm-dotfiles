@@ -2,7 +2,6 @@ apps:
   arch:
     - fish
     - grim
-    - flameshot
     - kitty
     - waybar
     - mako
@@ -16,6 +15,12 @@ apps:
     - brightnessctl
     - pavucontrol
     - libnotify
+    - python-gobject
+    - gtk3
+    - gtk-layer-shell
+    - bluez-utils
+    - imagemagick
+    - adw-gtk-theme
     - qt6ct
   aur:
     - bruno-bin

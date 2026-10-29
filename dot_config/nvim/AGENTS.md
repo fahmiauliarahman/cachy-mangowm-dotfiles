@@ -25,7 +25,7 @@ These instructions apply to the `nvim` Stow package.
 - Prefer LazyVim defaults and official extras over custom configuration.
 - Keep overrides minimal and scoped to the plugin they configure.
 - Do not add plugins when LazyVim, Neovim, or an installed plugin already provides the behavior.
-- Preserve Catppuccin Mocha and transparent editor and floating-window backgrounds.
+- Preserve the `mango` colorscheme and its live MangoWM palette integration.
 - Keep animations and automatic plugin update checks disabled.
 - Keep `README.md` synchronized when user-facing keymaps or behavior change.
 

@@ -1,9 +1,9 @@
 font=JetBrainsMono Nerd Font 11
-background-color=#101520ee
-text-color=#d1dae8
-border-color=#6c7e97
+background-color=#222730ee
+text-color=#d8dee9
+border-color=#81a1c1
 border-size=2
-border-radius=8
+border-radius=2
 padding=10
 margin=8
 width=320
@@ -20,12 +20,12 @@ format=<b>%s</b>\n%b
 group-by=app-name
 
 [urgency=low]
-border-color=#2a3648
+border-color=#4c566a
 default-timeout=3000
 
 [urgency=high]
-border-color=#ad401f
-text-color=#e0e8f0
+border-color=#bf616a
+text-color=#d8dee9
 default-timeout=0
 
 [mode=do-not-disturb]

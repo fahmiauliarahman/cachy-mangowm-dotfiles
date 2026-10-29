@@ -1,4 +1,5 @@
 #!/bin/sh
+# Capture through wlroots-native tools; Flameshot 12 cannot capture on MangoWM.
 # screenshot.sh region | full | color
 
 set -eu
@@ -12,21 +13,26 @@ notify() {
 	command -v notify-send >/dev/null 2>&1 && notify-send -a mango "$1" "$2" || true
 }
 
-flameshot_wayland() {
-  env XDG_CURRENT_DESKTOP=mango XDG_SESSION_DESKTOP=mango QT_QPA_PLATFORM=wayland flameshot "$@"
+save_screenshot() {
+	if [ "$1" = region ]; then
+		geom=$(slurp) || exit 0
+		grim -g "$geom" "$out"
+	else
+		grim "$out"
+	fi
+	wl-copy --type image/png < "$out"
+	notify "Screenshot" "$out"
 }
 
 case "${1:-region}" in
 region)
-	flameshot_wayland gui --path "$out" --clipboard
-	[ -s "$out" ] && notify "Screenshot" "$out"
+	save_screenshot region
 	;;
 full)
-	flameshot_wayland full --path "$out" --clipboard
-	[ -s "$out" ] && notify "Screenshot" "$out"
+	save_screenshot full
 	;;
 color)
-	geom=$(slurp -p -b 00000000 -c 89b4faff) || exit 0
+	geom=$(slurp -p -b 00000000 -c 81a1c1ff) || exit 0
 	hex=$(grim -g "$geom" -t ppm - | magick - -format '%[hex:p{0,0}]' info: 2>/dev/null || true)
 	if [ -z "$hex" ]; then
 		notify "Color picker" "ImageMagick magick is not installed"

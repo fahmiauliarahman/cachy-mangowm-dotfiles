@@ -1,11 +1,14 @@
-#!/usr/bin/env python3
-"""Wi-Fi and Bluetooth panels, Quattro behavior, mango colors.
+#!/usr/bin/python3
+"""Wi-Fi and Bluetooth panels, Quattro behavior and Nord colors.
 
 wifi: connected, then other networks with signal bars, then hidden network.
 bluetooth: connected, paired, then devices found while scanning.
 """
 
+import atexit
+import fcntl
 import json
+import os
 import subprocess
 import sys
 
@@ -16,27 +19,36 @@ gi.require_version("Gdk", "3.0")
 gi.require_version("GtkLayerShell", "0.1")
 from gi.repository import Gdk, GLib, Gtk, GtkLayerShell
 
-BG = "#101520"
-FG = "#d1dae8"
-MUTED = "#6c7e97"
-ACCENT = "#89b4fa"
-LINE = "#2a3648"
+BG = "#222730"
+FG = "#d8dee9"
+MUTED = "#adb5c4"
+ACCENT = "#81a1c1"
+LINE = "#4c566a"
 CSS = f"""
 window {{
-  background: {BG};
+  background: transparent;
 }}
 .panel {{
   background: {BG};
   color: {FG};
   border: 1px solid {LINE};
-  border-radius: 8px;
+  border-radius: 2px;
 }}
-.row {{
+button.row {{
+  color: {FG};
+  background: {BG};
   padding: 7px 12px;
-  border-radius: 8px;
+  border: none;
+  border-radius: 2px;
 }}
-.row:hover {{
-  background: #1a2433;
+button.row:hover,
+button.row:focus {{
+  color: {FG};
+  background: #3b4252;
+}}
+button.row:active {{
+  color: #191c23;
+  background: {ACCENT};
 }}
 .section {{
   color: {MUTED};
@@ -54,10 +66,10 @@ window {{
   color: {ACCENT};
 }}
 entry {{
-  background: #1a222e;
+  background: #2e3440;
   color: {FG};
   border: 1px solid {LINE};
-  border-radius: 8px;
+  border-radius: 2px;
   padding: 6px 8px;
   margin: 4px 12px 10px 12px;
   caret-color: {FG};
@@ -92,19 +104,17 @@ def bars(signal):
 class Panel(Gtk.Window):
     def __init__(self, title):
         super().__init__(type=Gtk.WindowType.TOPLEVEL)
-        self.set_decorated(False)
-        self.set_resizable(False)
+        self.set_can_focus(True)
+        self.set_focus_on_map(True)
         self.set_name("panel")
-        self.set_size_request(340, -1)
         GtkLayerShell.init_for_window(self)
         GtkLayerShell.set_layer(self, GtkLayerShell.Layer.OVERLAY)
-        GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.TOP, True)
-        GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.RIGHT, True)
-        GtkLayerShell.set_margin(self, GtkLayerShell.Edge.TOP, 42)
-        GtkLayerShell.set_margin(self, GtkLayerShell.Edge.RIGHT, 10)
+        for edge in (GtkLayerShell.Edge.TOP, GtkLayerShell.Edge.RIGHT,
+                     GtkLayerShell.Edge.BOTTOM, GtkLayerShell.Edge.LEFT):
+            GtkLayerShell.set_anchor(self, edge, True)
         GtkLayerShell.set_keyboard_mode(self, GtkLayerShell.KeyboardMode.EXCLUSIVE)
         self.connect("key-press-event", self._key)
-        self.connect("focus-out-event", lambda *_: self.close())
+        self.connect("button-press-event", self._outside_click)
 
         screen = Gdk.Screen.get_default()
         provider = Gtk.CssProvider()
@@ -112,16 +122,44 @@ class Panel(Gtk.Window):
         Gtk.StyleContext.add_provider_for_screen(
             screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
-        self.get_style_context().add_class("panel")
-
+        backdrop = Gtk.EventBox()
+        backdrop.set_visible_window(False)
+        backdrop.set_can_focus(False)
+        backdrop.connect("button-press-event", self._outside_click)
+        self.add(backdrop)
+        align = Gtk.Alignment.new(1, 0, 0, 0)
+        align.set_padding(42, 0, 0, 10)
+        backdrop.add(align)
         self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self.box.get_style_context().add_class("panel")
         self.box.set_margin_bottom(8)
-        self.add(self.box)
+        align.add(self.box)
+        header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.box.pack_start(header, False, False, 0)
         label = Gtk.Label(label=title, xalign=0)
         label.get_style_context().add_class("title")
-        self.box.pack_start(label, False, False, 0)
+        header.pack_start(label, True, True, 0)
+        close = Gtk.Button(label="×")
+        close.set_tooltip_text("Close panel (Escape)")
+        close.set_relief(Gtk.ReliefStyle.NONE)
+        close.connect("clicked", lambda *_: self.close())
+        header.pack_end(close, False, False, 0)
         self.body = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.box.pack_start(self.body, True, True, 0)
+
+    def _outside_click(self, _backdrop, event):
+        allocation = self.box.get_allocation()
+        origin_x, origin_y = self.box.get_window().get_origin()
+        if not (origin_x <= event.x_root < origin_x + allocation.width and
+                origin_y <= event.y_root < origin_y + allocation.height):
+            self.close()
+            return True
+        return False
+
+    def close(self):
+        self.destroy()
+        if Gtk.main_level():
+            Gtk.main_quit()
 
     def _key(self, _win, event):
         if event.keyval == Gdk.KEY_Escape:
@@ -168,6 +206,7 @@ class Panel(Gtk.Window):
     def show_all_now(self):
         self.show_all()
         self.present()
+        self.grab_focus()
 
 
 class Wifi(Panel):
@@ -196,9 +235,12 @@ class Wifi(Panel):
                 continue
             seen[ssid] = (use == "*", signal, sec)
         connected = [(s, v) for s, v in seen.items() if v[0]]
-        rest = sorted(((s, v) for s, v in seen.items() if not v[0]), key=lambda item: -int(item[1][1] or 0))
+        rest = sorted(
+            ((s, v) for s, v in seen.items() if not v[0]),
+            key=lambda item: -int(item[1][1] or 0),
+        )
         if connected:
-            self.section("Connected")
+            self.section("Connected: " + ", ".join(ssid for ssid, _ in connected))
             for ssid, (_use, signal, _sec) in connected:
                 self.row(ssid, bars(signal) + "  connected", lambda s=ssid: self.disconnect(s), accent=True)
         if rest:
@@ -213,18 +255,32 @@ class Wifi(Panel):
         self.show_all_now()
 
     def disconnect(self, _ssid):
-        run(["nmcli", "device", "disconnect", "wlan0"], timeout=10)
+        devices = run(["nmcli", "-t", "-f", "DEVICE,TYPE,STATE", "device", "status"]).stdout
+        for line in devices.splitlines():
+            device, kind, state = (line.split(":", 2) + ["", ""])[:3]
+            if kind == "wifi" and state.startswith("connected"):
+                run(["nmcli", "device", "disconnect", device], timeout=10)
+                break
         self.close()
 
     def join(self, ssid, sec, hidden=False):
+        # Activate a saved NetworkManager connection before requesting secrets.
+        profiles = run(["nmcli", "-t", "-f", "UUID,TYPE", "connection", "show"]).stdout
+        for line in profiles.splitlines():
+            uuid, _, kind = line.partition(":")
+            if kind not in ("802-11-wireless", "wifi"):
+                continue
+            saved_ssid = run(["nmcli", "-g", "802-11-wireless.ssid", "connection", "show", "uuid", uuid]).stdout.strip()
+            if saved_ssid == ssid:
+                self.done(ssid, run(["nmcli", "connection", "up", "uuid", uuid], timeout=25))
+                return
         if sec and sec != "--":
             self.ask_password(ssid, hidden)
             return
         args = ["nmcli", "device", "wifi", "connect", ssid]
         if hidden:
             args += ["hidden", "yes"]
-        result = run(args, timeout=25)
-        self.done(ssid, result)
+        self.done(ssid, run(args, timeout=25))
 
     def hidden(self):
         self.asking = True
@@ -318,12 +374,16 @@ class Bluetooth(Panel):
             "Paired": [d for d in devices if d[2] and not d[3]],
             "Available": [d for d in devices if not d[2] and not d[3]],
         }
+        connected_names = [name for _mac, name, _paired, connected in devices if connected]
+        if connected_names:
+            self.section("Connected: " + ", ".join(connected_names))
         shown = False
         for title, rows in groups.items():
             if not rows:
                 continue
             shown = True
-            self.section(title)
+            if title != "Connected":
+                self.section(title)
             for mac, name, paired, connected in rows:
                 if connected:
                     sub, action = "connected", lambda m=mac: self.act("disconnect", m)
@@ -351,7 +411,7 @@ class Bluetooth(Panel):
         if result.returncode != 0:
             self.fail(result)
             return
-        self.refresh()
+        self.close()
 
     def fail(self, result):
         err = (result.stderr or result.stdout or "failed").strip().splitlines()
@@ -366,6 +426,14 @@ class Bluetooth(Panel):
 
 
 def main():
+    runtime = os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
+    lock = open(os.path.join(runtime, "mango-radio-panel.lock"), "w")
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        lock.close()
+        return 0
+    atexit.register(lock.close)
     kind = sys.argv[1] if len(sys.argv) > 1 else ""
     if kind == "wifi":
         Wifi()

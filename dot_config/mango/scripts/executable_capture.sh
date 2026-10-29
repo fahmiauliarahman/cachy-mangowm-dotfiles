@@ -11,5 +11,5 @@ case "$choice" in
 region) "$DIR/screenshot.sh" region ;;
 fullscreen) "$DIR/screenshot.sh" full ;;
 color) "$DIR/screenshot.sh" color ;;
-clipboard) "$DIR/clip.sh" ;;
+clipboard) "$DIR/clip.py" ;;
 esac

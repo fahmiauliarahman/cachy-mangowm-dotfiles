@@ -9,8 +9,8 @@ daily tools.
 
 - Installs DBX (`dbx-bin`) from the AUR for database work
 - Installs selected Arch and AUR packages, removes selected packages, and sets up MangoWM runtime tools
-- Configures MangoWM, Waybar, Fish, Git, mise, Neovim, and LazyGit
-- Adds MangoWM scripts for session actions, screenshots, clipboard, Wi-Fi, and wallpapers
+- Configures MangoWM, Waybar, Fuzzel, Mako, Kitty, Qt, and GTK with all 23 Omarchy Quattro palettes and 98 wallpapers
+- Adds MangoWM-native session actions, screenshots, image-preview clipboard history, radio panels, and theme switching
 - Keeps credentials, browser data, and machine-generated backups out of Git
 
 This is a personal chezmoi configuration, not an OS installer. It targets
@@ -18,6 +18,8 @@ CachyOS with MangoWM already installed. Review [`.chezmoidata.yaml`](.chezmoidat
 and the [`run_*` scripts](run_onchange_before_10-install-apps.sh.tmpl) before
 applying: package installation/removal uses `sudo`, AUR packages require `paru`
 or `yay`, and another script may change the login shell to Fish.
+
+This is a MangoWM-native interpretation of [Omarchy Quattro themes](https://github.com/omacom/omarchy/tree/quattro/themes), not an Omarchy or Hyprland installation. It uses MangoWM tags, layouts, IPC, and existing Wayland utilities. The theme switcher is on `Super+Ctrl+T`. See [desktop bindings and limitations](docs/customizing.md#desktop-workflow) before applying.
 
 ## Install
 
